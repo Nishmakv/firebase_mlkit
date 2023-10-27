@@ -19,7 +19,7 @@ class Button extends StatelessWidget {
       onTap: onButtonTap,
       child: Container(
         height: 55,
-        width: 50,
+        width: 200,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(7),
           color: isPress ? const Color(0xFFDE3535) : const Color(0xFFF6F6F6),

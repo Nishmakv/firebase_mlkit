@@ -1,9 +1,8 @@
-import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_in_app_messaging/firebase_in_app_messaging.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:firebase_project/screens/home_page.dart';
 import 'package:firebase_project/screens/image_add_screen.dart';
-import 'package:firebase_project/widgets/in_app.dart';
+
 import 'package:flutter/material.dart';
 
 void main() async {
@@ -18,7 +17,7 @@ void main() async {
 
   // final FirebaseInAppMessaging fian = FirebaseInAppMessaging.instance;
   // print(fian);
- // PushNotificationService().initailize(); 
+  // PushNotificationService().initailize();
 
   runApp(const MyApp());
 }
@@ -32,7 +31,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(),
-      home: const ImageAddScreen(),
+      home: const HomePage(),
     );
   }
 }

@@ -1,3 +1,5 @@
+import 'package:firebase_project/data/digital_ink_function.dart';
+import 'package:firebase_project/widgets/button.dart';
 import 'package:flutter/material.dart' hide Ink;
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_mlkit_digital_ink_recognition/google_mlkit_digital_ink_recognition.dart';
@@ -11,11 +13,14 @@ class SignatureCanvas extends StatefulWidget {
 }
 
 class _SignatureCanvasState extends State<SignatureCanvas> {
-  final String _language = 'en';
+  final String language = 'en';
   final _digitalInkRecognizer = DigitalInkRecognizer(languageCode: 'en');
-  final Ink _ink = Ink();
+  final Ink ink = Ink();
   List<StrokePoint> _points = [];
   String _recognizedText = '';
+  bool isPressed1 = false;
+  bool isPressed2 = false;
+  InkClass data = InkClass();
 
   @override
   void dispose() {
@@ -51,43 +56,37 @@ class _SignatureCanvasState extends State<SignatureCanvas> {
               child: Row(
                 children: [
                   Expanded(
-                    child: GestureDetector(
-                      onTap: _recogniseText,
-                      child: Container(
-                        height: 55,
-                        width: 50,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(7),
-                            color: const Color(0xFFDE3535)),
-                        child: Center(
-                            child: Text(
-                          "Detect Text",
-                          style: GoogleFonts.poppins(
-                              textStyle: const TextStyle(
-                                  color: Colors.white, fontSize: 16)),
-                        )),
-                      ),
+                    child: Button(
+                      onButtonTap: () async {
+                        // data.recogniseText(language, ink);
+
+                        // showDialog(
+                        //   context: context,
+                        //   builder: (context) => const AlertDialog(
+                        //     title: Text('Recognizing'),
+                        //   ),
+                        //   barrierDismissible: true,
+                        // );
+                        _recognizedText =
+                            await data.recogniseText(language, ink);
+                        setState(
+                          () {
+                            isPressed1 = true;
+                            isPressed2 = false;
+                          },
+                        );
+                      },
+                      //onButtonTap: _recogniseText,
+                      text: 'Detect Text',
+                      isPress: isPressed1,
                     ),
                   ),
                   const SizedBox(width: 10),
                   Expanded(
-                    child: GestureDetector(
-                      onTap: _clearPad,
-                      child: Container(
-                        height: 55,
-                        width: 50,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(7),
-                            color: const Color(0xFFDE3535)),
-                        child: Center(
-                            child: Text(
-                          "Clear Pad",
-                          style: GoogleFonts.poppins(
-                              textStyle: const TextStyle(
-                                  color: Colors.white, fontSize: 16)),
-                        )),
-                      ),
-                    ),
+                    child: Button(
+                        onButtonTap: _clearPad,
+                        text: 'Clear Pad',
+                        isPress: isPressed2),
                   ),
                 ],
               ),
@@ -95,7 +94,7 @@ class _SignatureCanvasState extends State<SignatureCanvas> {
             Expanded(
               child: GestureDetector(
                 onPanStart: (DragStartDetails details) {
-                  _ink.strokes.add(Stroke());
+                  ink.strokes.add(Stroke());
                 },
                 onPanUpdate: (DragUpdateDetails details) {
                   setState(() {
@@ -110,8 +109,8 @@ class _SignatureCanvasState extends State<SignatureCanvas> {
                           t: DateTime.now().millisecondsSinceEpoch,
                         ));
                     }
-                    if (_ink.strokes.isNotEmpty) {
-                      _ink.strokes.last.points = _points.toList();
+                    if (ink.strokes.isNotEmpty) {
+                      ink.strokes.last.points = _points.toList();
                     }
                   });
                 },
@@ -120,7 +119,7 @@ class _SignatureCanvasState extends State<SignatureCanvas> {
                   setState(() {});
                 },
                 child: CustomPaint(
-                  painter: Signature(ink: _ink),
+                  painter: Signature(ink: ink),
                   size: Size.infinite,
                 ),
               ),
@@ -165,34 +164,12 @@ class _SignatureCanvasState extends State<SignatureCanvas> {
 
   void _clearPad() {
     setState(() {
-      _ink.strokes.clear();
+      ink.strokes.clear();
       _points.clear();
       _recognizedText = '';
+      isPressed1 = false;
+      isPressed2 = true;
     });
-  }
-
-  Future<void> _recogniseText() async {
-    showDialog(
-        context: context,
-        builder: (context) => const AlertDialog(
-              title: Text('Recognizing'),
-            ),
-        barrierDismissible: true);
-    try {
-      final modelManager = DigitalInkRecognizerModelManager();
-      final bool response = await modelManager.downloadModel(_language);
-      final candidates = await _digitalInkRecognizer.recognize(_ink);
-      _recognizedText = '';
-      for (final candidate in candidates) {
-        _recognizedText += '\n${candidate.text}';
-      }
-      setState(() {});
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(e.toString()),
-      ));
-    }
-    Navigator.pop(context);
   }
 }
 
