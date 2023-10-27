@@ -7,19 +7,22 @@ import 'package:google_ml_kit/google_ml_kit.dart';
 import 'package:image_picker/image_picker.dart';
 import '../widgets/button.dart';
 
-class TextScreen extends StatefulWidget {
-  const TextScreen({super.key});
+class FaceScreen extends StatefulWidget {
+  const FaceScreen({super.key});
 
   @override
-  State<TextScreen> createState() => _TextScreenState();
+  State<FaceScreen> createState() => _FaceScreenState();
 }
 
-class _TextScreenState extends State<TextScreen> {
+class _FaceScreenState extends State<FaceScreen> {
   XFile? image;
   ImagePicker? imagePicker;
-  String text1 = "";
   bool isPressed1 = false;
   bool isPressed2 = false;
+  String headRotationX = '';
+  String headRotationY = '';
+  bool isFaceDetected = false;
+  bool isSmiling = false;
   bool isResult = false;
 
   Future pickImage(String a) async {
@@ -56,29 +59,49 @@ class _TextScreenState extends State<TextScreen> {
     );
   }
 
-  void detectText() async {
-    setState(
-      () {
-        isPressed2 = true;
-        isPressed1 = false;
-
-        text1 = "";
-        isResult = true;
-      },
-    );
-    final textRecognizer = TextRecognizer(script: TextRecognitionScript.latin);
-
+  void detectFace() async {
+    setState(() {
+      isFaceDetected = false;
+      isSmiling = false;
+      isPressed2 = false;
+      isPressed1 = true;
+      isResult = true;
+    });
     final inputImage = InputImage.fromFilePath(image!.path);
 
-    final RecognizedText recognizedText =
-        await textRecognizer.processImage(inputImage);
-
-    for (TextBlock block in recognizedText.blocks) {
+    final faceDetector = FaceDetector(
+        options: FaceDetectorOptions(
+      enableClassification: true,
+      enableLandmarks: true,
+      enableContours: true,
+      enableTracking: true,
+    ));
+    final List<Face> faces = await faceDetector.processImage(inputImage);
+    if (faces.isNotEmpty) {
       setState(() {
-        text1 += "$block.text";
+        isFaceDetected = true;
       });
     }
-    textRecognizer.close();
+    for (Face face in faces) {
+      final double? rotX =
+          face.headEulerAngleX; // Head is tilted up and down rotX degrees
+      final double? rotY =
+          face.headEulerAngleY; // Head is rotated to the right rotY degrees
+      setState(() {
+        headRotationX = rotX.toString();
+        headRotationY = rotY.toString();
+      });
+      double? smileProb;
+      if (face.smilingProbability != null) {
+        smileProb = face.smilingProbability;
+
+        if (smileProb! > 0.5) {
+          setState(() {
+            isSmiling = true;
+          });
+        }
+      }
+    }
   }
 
   @override
@@ -88,16 +111,14 @@ class _TextScreenState extends State<TextScreen> {
 
   @override
   Widget build(BuildContext context) {
-    FirebaseMessaging.onMessage.listen((event) {
-      //print("eventtttt.... $event");
-    });
+    FirebaseMessaging.onMessage.listen((event) {});
     return Scaffold(
       appBar: AppBar(
         title: GestureDetector(
           onTap: () {
             Navigator.of(context).pushReplacement(
               MaterialPageRoute(
-                builder: (ctx) => const TextScreen(),
+                builder: (ctx) => const FaceScreen(),
               ),
             );
           },
@@ -185,42 +206,86 @@ class _TextScreenState extends State<TextScreen> {
                             ),
                           ),
                           const SizedBox(height: 20),
-                          const SizedBox(width: 5),
                           SizedBox(
                             height: 50,
                             width: 150,
                             child: Button(
-                              onButtonTap: detectText,
-                              text: "Detect Text",
-                              isPress: isPressed2,
+                              onButtonTap: detectFace,
+                              text: "Detect face",
+                              isPress: isPressed1,
                             ),
                           ),
                         ],
                       ),
                 const SizedBox(height: 10),
-                isResult == true
-                    ? Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                              color: const Color(0x33DE3535), width: 1),
-                          color: const Color(0x0CDE3535),
+                isResult==true?
+                Column(
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                            color: const Color(0x33DE3535), width: 1),
+                        color: const Color(0x0CDE3535),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                const Text('Detected'),
+                                Text(isFaceDetected ? 'Yes' : 'No'),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                const Text('Facial expression'),
+                                Text(
+                                  isSmiling ? 'Smiling' : 'Not Smiling',
+                                  style: const TextStyle(
+                                      color: Colors.red,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                'Result',
-                                style: TextStyle(fontWeight: FontWeight.w600),
-                              ),
-                              const SizedBox(height: 10),
-                              Text(text1 == "" ? "No text detected" : text1),
-                            ],
-                          ),
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                            color: const Color(0x33DE3535), width: 1),
+                        color: const Color(0x0CDE3535),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                const Text("Head Rotation in X axis"),
+                                Text(headRotationX),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                const Text('Head Rotation in Y axis'),
+                                Text(
+                                  headRotationY,
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
-                      )
-                    : const SizedBox(),
+                      ),
+                    ),
+                  ],
+                )
+                :SizedBox(),
               ],
             ),
           ),

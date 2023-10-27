@@ -5,8 +5,9 @@ import 'package:google_fonts/google_fonts.dart';
 
 class HomeScreen extends StatefulWidget {
   VoidCallback onButtonTap;
-  VoidCallback onTap;
-  HomeScreen({super.key, required this.onButtonTap, required this.onTap});
+
+  HomeScreen({super.key, required this.onButtonTap,
+});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -77,7 +78,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           //onPressed: widget.onButtonTap,
                           onPressed: () {
                             ;
-                            widget.onTap;
+                            // widget.onTap;
                             // Navigator.of(context).push(
                             //   MaterialPageRoute(
                             //     builder: (ctx) => TextScreen(),

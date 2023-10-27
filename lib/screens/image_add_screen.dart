@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:firebase_project/data/upload_function.dart';
-import 'package:firebase_project/screens/home_page.dart';
+import 'package:firebase_project/screens/language_detector_screen.dart';
+import 'package:firebase_project/screens/text_recognition_screen.dart';
 import 'package:firebase_project/widgets/home.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -27,11 +27,11 @@ class _ImageAddScreenState extends State<ImageAddScreen> {
   String tab = '';
   bool isFaceDetected = false;
   bool isSmiling = false;
-  ImageUploader imageuploader = ImageUploader();
-  
+
   Future pickImage(String a) async {
     image = await ImagePicker().pickImage(
         source: a == "Gallery" ? ImageSource.gallery : ImageSource.camera);
+    setState(() {});
   }
 
   void modelBottomSheet(context) {
@@ -45,16 +45,14 @@ class _ImageAddScreenState extends State<ImageAddScreen> {
                 leading: const Icon(Icons.photo_camera),
                 title: const Text('Camera'),
                 onTap: () {
-                  // pickImage('Camera');
-                  imageuploader.pickImage('Camera');
+                  pickImage('Camera');
                 },
               ),
               ListTile(
                 leading: const Icon(Icons.photo),
                 title: const Text('Gallery'),
                 onTap: () {
-                  imageuploader.pickImage('Gallery');
-                  //pickImage('Gallery');
+                  pickImage('Gallery');
                 },
               )
             ],
@@ -151,7 +149,7 @@ class _ImageAddScreenState extends State<ImageAddScreen> {
           onTap: () {
             Navigator.of(context).pushReplacement(
               MaterialPageRoute(
-                builder: (ctx) => const ImageAddScreen(),
+                builder: (ctx) => const TextScreen(),
               ),
             );
           },
@@ -175,13 +173,7 @@ class _ImageAddScreenState extends State<ImageAddScreen> {
                         onButtonTap: () {
                           modelBottomSheet(context);
                         },
-                        onTap: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (ctx) => const HomePage(),
-                            ),
-                          );
-                        },
+                      
                       )
                     : Column(
                         children: [
@@ -211,7 +203,8 @@ class _ImageAddScreenState extends State<ImageAddScreen> {
                                       width: 117,
                                       height: 40,
                                       decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(50),
+                                        borderRadius:
+                                            BorderRadius.circular(50),
                                       ),
                                       child: ElevatedButton.icon(
                                         onPressed: () {
@@ -259,11 +252,6 @@ class _ImageAddScreenState extends State<ImageAddScreen> {
                               Expanded(
                                 child: Button(
                                   onButtonTap: detectText,
-                                   
-                                    // setState(() {
-                                    //   text = "";
-                                    // });
-                                  
                                   text: "Detect Text",
                                   isPress: isPressed2,
                                 ),

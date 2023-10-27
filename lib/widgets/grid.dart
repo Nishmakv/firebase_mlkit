@@ -1,9 +1,10 @@
+import 'package:firebase_project/screens/face_detection_screen.dart';
 import 'package:firebase_project/screens/text_recognition_screen.dart';
 import 'package:firebase_project/screens/digital_ink.dart';
 import 'package:firebase_project/screens/image_add_screen.dart';
 import 'package:firebase_project/screens/language_detector_screen.dart';
-import 'package:firebase_project/widgets/button.dart';
-import 'package:firebase_project/widgets/home.dart';
+// import 'package:firebase_project/widgets/button.dart';
+// import 'package:firebase_project/widgets/home.dart';
 import 'package:firebase_project/widgets/home_button.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_project/data/list.dart';
@@ -55,7 +56,7 @@ class GridScreen extends StatelessWidget {
               case 3:
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (ctx) => const SignatureCanvas(),
+                    builder: (ctx) => const FaceScreen(),
                   ),
                 );
                 break;
@@ -78,7 +79,7 @@ class GridScreen extends StatelessWidget {
               case 6:
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (ctx) => ImageAddScreen(),
+                    builder: (ctx) => TextScreen(),
                   ),
                 );
 
