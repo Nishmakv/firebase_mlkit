@@ -75,7 +75,7 @@ class _TextScreenState extends State<TextScreen> {
 
     for (TextBlock block in recognizedText.blocks) {
       setState(() {
-        text1 += "$block.text";
+        text1 += "${block.text}";
       });
     }
     textRecognizer.close();

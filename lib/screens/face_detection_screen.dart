@@ -285,7 +285,7 @@ class _FaceScreenState extends State<FaceScreen> {
                     ),
                   ],
                 )
-                :SizedBox(),
+                :const SizedBox(),
               ],
             ),
           ),
