@@ -1,13 +1,14 @@
-import 'package:firebase_project/screens/digital_ink.dart';
-import 'package:firebase_project/screens/text_recognition_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+// ignore: must_be_immutable
 class HomeScreen extends StatefulWidget {
   VoidCallback onButtonTap;
 
-  HomeScreen({super.key, required this.onButtonTap,
-});
+  HomeScreen({
+    super.key,
+    required this.onButtonTap,
+  });
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -69,22 +70,16 @@ class _HomeScreenState extends State<HomeScreen> {
                     height: 50,
                     width: 200,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(7),
-                      color: const Color(0xFFF6F6F6),
-                    ),
+                        borderRadius: BorderRadius.circular(7),
+                        color: const Color.fromARGB(255, 230, 230, 230)
+                        // color: const Color(0xFFF6F6F6),
+                        // color: Color.fromARGB(87, 246, 246, 246),
+                        ),
                     child: Row(
                       children: [
                         IconButton(
                           //onPressed: widget.onButtonTap,
-                          onPressed: () {
-                            ;
-                            // widget.onTap;
-                            // Navigator.of(context).push(
-                            //   MaterialPageRoute(
-                            //     builder: (ctx) => TextScreen(),
-                            //   ),
-                            // );
-                          },
+                          onPressed: () {},
                           icon: const Icon(Icons.cloud_upload_outlined),
                         ),
                         Text(
@@ -100,70 +95,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                 ),
-                // const SizedBox(height: 15),
-                // GestureDetector(
-                //   onTap: widget.onTap,
-                //   child: Container(
-                //     height: 50,
-                //     width: 200,
-                //     decoration: BoxDecoration(
-                //       borderRadius: BorderRadius.circular(7),
-                //       color: const Color(0xFFF6F6F6),
-                //     ),
-                //     child: Row(
-                //       children: [
-                //         IconButton(
-                //           onPressed: widget.onTap,
-                //           icon: const Icon(Icons.note_alt),
-                //         ),
-                //         Text(
-                //           'Language Detector',
-                //           style: GoogleFonts.poppins(
-                //             textStyle: const TextStyle(
-                //               fontSize: 14,
-                //               fontWeight: FontWeight.w500,
-                //             ),
-                //           ),
-                //         ),
-                //       ],
-                //     ),
-                //   ),
-                // ),
-                // const SizedBox(height: 15),
-                // GestureDetector(
-                //   onTap: () {
-                //     Navigator.of(context).push(
-                //       MaterialPageRoute(
-                //         builder: (ctx) => const SignatureCanvas(),
-                //       ),
-                //     );
-                //   },
-                //   child: Container(
-                //     height: 50,
-                //     width: 200,
-                //     decoration: BoxDecoration(
-                //       borderRadius: BorderRadius.circular(7),
-                //       color: const Color(0xFFF6F6F6),
-                //     ),
-                //     child: Row(
-                //       children: [
-                //         IconButton(
-                //           onPressed: () {},
-                //           icon: const Icon(Icons.text_decrease_outlined),
-                //         ),
-                //         Text(
-                //           'Ink Detector',
-                //           style: GoogleFonts.poppins(
-                //             textStyle: const TextStyle(
-                //               fontSize: 14,
-                //               fontWeight: FontWeight.w500,
-                //             ),
-                //           ),
-                //         ),
-                //       ],
-                //     ),
-                //   ),
-                // ),
               ],
             ),
           ),

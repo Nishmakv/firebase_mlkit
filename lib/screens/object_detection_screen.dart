@@ -1,29 +1,26 @@
 import 'dart:io';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_project/widgets/home.dart';
+import 'package:firebase_project/widgets/label_display.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_ml_kit/google_ml_kit.dart';
 import 'package:image_picker/image_picker.dart';
 import '../widgets/button.dart';
 
-class FaceScreen extends StatefulWidget {
-  const FaceScreen({super.key});
+class ObjectDetectionScreen extends StatefulWidget {
+  const ObjectDetectionScreen({super.key});
 
   @override
-  State<FaceScreen> createState() => _FaceScreenState();
+  State<ObjectDetectionScreen> createState() => ObjectDetectionScreenState();
 }
 
-class _FaceScreenState extends State<FaceScreen> {
+class ObjectDetectionScreenState extends State<ObjectDetectionScreen> {
   XFile? image;
   ImagePicker? imagePicker;
-  bool isPressed1 = true;
-  String headRotationX = '';
-  String headRotationY = '';
-  bool isFaceDetected = false;
-  bool isSmiling = false;
-  bool isResult = false;
-
+  bool isPressed1 = false;
+  bool isPressed2 = false;
+  List list = [];
   Future pickImage(String a) async {
     image = await ImagePicker().pickImage(
         source: a == "Gallery" ? ImageSource.gallery : ImageSource.camera);
@@ -58,47 +55,38 @@ class _FaceScreenState extends State<FaceScreen> {
     );
   }
 
-  void detectFace() async {
+  String? text;
+  String result = "";
+
+  Future getobjectdetect() async {
     setState(() {
-      isFaceDetected = false;
-      isSmiling = false;
-      isPressed1 = true;
-      isResult = true;
+      list = [];
     });
+
     final inputImage = InputImage.fromFilePath(image!.path);
+    ObjectDetector detector = ObjectDetector(
+        options: ObjectDetectorOptions(
+            mode: DetectionMode.single,
+            classifyObjects: true,
+            multipleObjects: true));
+    final List<DetectedObject> objdetect =
+        await detector.processImage(inputImage);
+    for (DetectedObject object in objdetect) {
+      // String confi;
+      final rect = object.boundingBox;
+      final trackingId = object.trackingId;
+      for (Label label in object.labels) {
+        String text = label.text;
+        double confidence = label.confidence;
+        // String confi=confidence.toString();
+        int index = label.index;
+        setState(() {
+          result =
+              "Category: $text\n$rect\nTrackinId: $trackingId\nConfidence: ${confidence.toStringAsFixed(2)}\nIndex: $index";
+          list.add(result);
+        });
 
-    final faceDetector = FaceDetector(
-      options: FaceDetectorOptions(
-        enableClassification: true,
-        enableLandmarks: true,
-        enableContours: true,
-        enableTracking: true,
-      ),
-    );
-    final List<Face> faces = await faceDetector.processImage(inputImage);
-    if (faces.isNotEmpty) {
-      setState(() {
-        isFaceDetected = true;
-      });
-    }
-    for (Face face in faces) {
-      final double? rotX =
-          face.headEulerAngleX; // Head is tilted up and down rotX degrees
-      final double? rotY =
-          face.headEulerAngleY; // Head is rotated to the right rotY degrees
-      setState(() {
-        headRotationX = rotX.toString();
-        headRotationY = rotY.toString();
-      });
-      double? smileProb;
-      if (face.smilingProbability != null) {
-        smileProb = face.smilingProbability;
-
-        if (smileProb! > 0.5) {
-          setState(() {
-            isSmiling = true;
-          });
-        }
+        print(result);
       }
     }
   }
@@ -117,7 +105,7 @@ class _FaceScreenState extends State<FaceScreen> {
           onTap: () {
             Navigator.of(context).pushReplacement(
               MaterialPageRoute(
-                builder: (ctx) => const FaceScreen(),
+                builder: (ctx) => const ObjectDetectionScreen(),
               ),
             );
           },
@@ -177,7 +165,8 @@ class _FaceScreenState extends State<FaceScreen> {
                                           modelBottomSheet(context);
                                         },
                                         style: ElevatedButton.styleFrom(
-                                          backgroundColor: Colors.white,
+                                          backgroundColor: const Color.fromRGBO(
+                                              255, 255, 255, 1),
                                           shape: RoundedRectangleBorder(
                                             borderRadius:
                                                 BorderRadius.circular(20),
@@ -209,82 +198,28 @@ class _FaceScreenState extends State<FaceScreen> {
                             height: 50,
                             width: 150,
                             child: Button(
-                              onButtonTap: detectFace,
-                              text: "Detect face",
+                              onButtonTap: getobjectdetect,
+                              text: "Detect Object",
                               isPress: isPressed1,
                             ),
                           ),
                         ],
                       ),
                 const SizedBox(height: 10),
-                isResult == true
-                    ? Column(
-                        children: [
-                          Container(
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                  color: const Color(0x33DE3535), width: 1),
-                              color: const Color(0x0CDE3535),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    children: [
-                                      const Text('Detected'),
-                                      Text(isFaceDetected ? 'Yes' : 'No'),
-                                    ],
-                                  ),
-                                  Row(
-                                    children: [
-                                      const Text('Facial expression'),
-                                      Text(
-                                        isSmiling ? 'Smiling' : 'Not Smiling',
-                                        style: const TextStyle(
-                                            color: Colors.red,
-                                            fontWeight: FontWeight.w600),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 2),
-                          Container(
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                  color: const Color(0x33DE3535), width: 1),
-                              color: const Color(0x0CDE3535),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    children: [
-                                      const Text("Head Rotation in X axis"),
-                                      Text(headRotationX),
-                                    ],
-                                  ),
-                                  Row(
-                                    children: [
-                                      const Text('Head Rotation in Y axis'),
-                                      Text(
-                                        headRotationY,
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      )
-                    : const SizedBox(),
+                // isResult == true
+                Column(
+                  children: [
+                    ListView.builder(
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: list.length,
+                        shrinkWrap: true,
+                        itemBuilder: (context, index) {
+                          return LabelDisplay(
+                              label: list[index], isSelect: true);
+                        })
+                  ],
+                )
+                //  : const SizedBox(),
               ],
             ),
           ),

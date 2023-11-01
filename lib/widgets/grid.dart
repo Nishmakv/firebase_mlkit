@@ -1,8 +1,12 @@
+import 'package:firebase_project/screens/barcode_screen.dart';
+import 'package:firebase_project/screens/device_translation_screen.dart';
 import 'package:firebase_project/screens/face_detection_screen.dart';
-import 'package:firebase_project/screens/text_recognition_screen.dart';
+import 'package:firebase_project/screens/image_labelling.dart';
+import 'package:firebase_project/screens/object_detection_screen.dart';
+import 'package:firebase_project/screens/smart_reply.dart';
 import 'package:firebase_project/screens/digital_ink.dart';
-import 'package:firebase_project/screens/image_add_screen.dart';
 import 'package:firebase_project/screens/language_detector_screen.dart';
+import 'package:firebase_project/screens/text_recognition_screen.dart';
 // import 'package:firebase_project/widgets/button.dart';
 // import 'package:firebase_project/widgets/home.dart';
 import 'package:firebase_project/widgets/home_button.dart';
@@ -32,7 +36,7 @@ class GridScreen extends StatelessWidget {
               case 0:
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (ctx) => const ImageAddScreen(),
+                    builder: (ctx) => const BarcodeScreen(),
                   ),
                 );
 
@@ -40,7 +44,7 @@ class GridScreen extends StatelessWidget {
               case 1:
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (ctx) => const SignatureCanvas(),
+                    builder: (ctx) => const LanguageTranslationScreen(),
                   ),
                 );
 
@@ -48,7 +52,7 @@ class GridScreen extends StatelessWidget {
               case 2:
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (ctx) => const ImageAddScreen(),
+                    builder: (ctx) => const ImageLabellingScreen(),
                   ),
                 );
 
@@ -63,7 +67,7 @@ class GridScreen extends StatelessWidget {
               case 4:
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (ctx) => const SignatureCanvas(),
+                    builder: (ctx) => const ObjectDetectionScreen(),
                   ),
                 );
 
@@ -71,7 +75,7 @@ class GridScreen extends StatelessWidget {
               case 5:
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (ctx) => const SignatureCanvas(),
+                    builder: (ctx) => const SmartReplyScreen(),
                   ),
                 );
 
@@ -79,7 +83,7 @@ class GridScreen extends StatelessWidget {
               case 6:
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (ctx) => TextScreen(),
+                    builder: (ctx) => const TextScreen(),
                   ),
                 );
 

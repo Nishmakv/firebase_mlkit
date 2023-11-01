@@ -1,29 +1,26 @@
 import 'dart:io';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_project/widgets/home.dart';
+import 'package:firebase_project/widgets/label_display.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_ml_kit/google_ml_kit.dart';
 import 'package:image_picker/image_picker.dart';
 import '../widgets/button.dart';
 
-class FaceScreen extends StatefulWidget {
-  const FaceScreen({super.key});
+class ImageLabellingScreen extends StatefulWidget {
+  const ImageLabellingScreen({super.key});
 
   @override
-  State<FaceScreen> createState() => _FaceScreenState();
+  State<ImageLabellingScreen> createState() => ImageLabellingScreenState();
 }
 
-class _FaceScreenState extends State<FaceScreen> {
+class ImageLabellingScreenState extends State<ImageLabellingScreen> {
   XFile? image;
   ImagePicker? imagePicker;
   bool isPressed1 = true;
-  String headRotationX = '';
-  String headRotationY = '';
-  bool isFaceDetected = false;
-  bool isSmiling = false;
-  bool isResult = false;
 
+  List list = [];
   Future pickImage(String a) async {
     image = await ImagePicker().pickImage(
         source: a == "Gallery" ? ImageSource.gallery : ImageSource.camera);
@@ -58,49 +55,29 @@ class _FaceScreenState extends State<FaceScreen> {
     );
   }
 
-  void detectFace() async {
+  String? text;
+  String result = "";
+
+  Future<List> getImagelabel() async {
     setState(() {
-      isFaceDetected = false;
-      isSmiling = false;
-      isPressed1 = true;
-      isResult = true;
+      list = [];
     });
+
     final inputImage = InputImage.fromFilePath(image!.path);
-
-    final faceDetector = FaceDetector(
-      options: FaceDetectorOptions(
-        enableClassification: true,
-        enableLandmarks: true,
-        enableContours: true,
-        enableTracking: true,
-      ),
-    );
-    final List<Face> faces = await faceDetector.processImage(inputImage);
-    if (faces.isNotEmpty) {
+    ImageLabeler imageLabeler =
+        ImageLabeler(options: ImageLabelerOptions(confidenceThreshold: 0.5));
+    final List<ImageLabel> labels = await imageLabeler.processImage(inputImage);
+    for (ImageLabel label in labels) {
+      String text = label.label;
+      double confidence = label.confidence;
+      int index = label.index;
       setState(() {
-        isFaceDetected = true;
+        result = "$text :: $confidence :: $index\n";
+        list.add(result);
       });
     }
-    for (Face face in faces) {
-      final double? rotX =
-          face.headEulerAngleX; // Head is tilted up and down rotX degrees
-      final double? rotY =
-          face.headEulerAngleY; // Head is rotated to the right rotY degrees
-      setState(() {
-        headRotationX = rotX.toString();
-        headRotationY = rotY.toString();
-      });
-      double? smileProb;
-      if (face.smilingProbability != null) {
-        smileProb = face.smilingProbability;
-
-        if (smileProb! > 0.5) {
-          setState(() {
-            isSmiling = true;
-          });
-        }
-      }
-    }
+    imageLabeler.close();
+    return list.toList();
   }
 
   @override
@@ -117,7 +94,7 @@ class _FaceScreenState extends State<FaceScreen> {
           onTap: () {
             Navigator.of(context).pushReplacement(
               MaterialPageRoute(
-                builder: (ctx) => const FaceScreen(),
+                builder: (ctx) => const ImageLabellingScreen(),
               ),
             );
           },
@@ -209,82 +186,36 @@ class _FaceScreenState extends State<FaceScreen> {
                             height: 50,
                             width: 150,
                             child: Button(
-                              onButtonTap: detectFace,
-                              text: "Detect face",
+                              onButtonTap: () {
+                                getImagelabel();
+                              },
+                              text: "Detect Image",
                               isPress: isPressed1,
                             ),
                           ),
                         ],
                       ),
                 const SizedBox(height: 10),
-                isResult == true
-                    ? Column(
-                        children: [
-                          Container(
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                  color: const Color(0x33DE3535), width: 1),
-                              color: const Color(0x0CDE3535),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    children: [
-                                      const Text('Detected'),
-                                      Text(isFaceDetected ? 'Yes' : 'No'),
-                                    ],
-                                  ),
-                                  Row(
-                                    children: [
-                                      const Text('Facial expression'),
-                                      Text(
-                                        isSmiling ? 'Smiling' : 'Not Smiling',
-                                        style: const TextStyle(
-                                            color: Colors.red,
-                                            fontWeight: FontWeight.w600),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 2),
-                          Container(
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                  color: const Color(0x33DE3535), width: 1),
-                              color: const Color(0x0CDE3535),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    children: [
-                                      const Text("Head Rotation in X axis"),
-                                      Text(headRotationX),
-                                    ],
-                                  ),
-                                  Row(
-                                    children: [
-                                      const Text('Head Rotation in Y axis'),
-                                      Text(
-                                        headRotationY,
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      )
-                    : const SizedBox(),
+                // isResult == true
+                Column(
+                  children: [
+                    Container(
+                      decoration: const BoxDecoration(
+                       
+                        color:  Color(0x0CDE3535),
+                      ),
+                      child: ListView.builder(
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: list.length,
+                          shrinkWrap: true,
+                          itemBuilder: (context, index) {
+                            return LabelDisplay(
+                                label: list[index], isSelect: true);
+                          }),
+                    )
+                  ],
+                )
+                //  : const SizedBox(),
               ],
             ),
           ),

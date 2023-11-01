@@ -7,22 +7,21 @@ import 'package:google_ml_kit/google_ml_kit.dart';
 import 'package:image_picker/image_picker.dart';
 import '../widgets/button.dart';
 
-class FaceScreen extends StatefulWidget {
-  const FaceScreen({super.key});
+class BarcodeScreen extends StatefulWidget {
+  const BarcodeScreen({super.key});
 
   @override
-  State<FaceScreen> createState() => _FaceScreenState();
+  State<BarcodeScreen> createState() => _BarcodeScreenState();
 }
 
-class _FaceScreenState extends State<FaceScreen> {
+class _BarcodeScreenState extends State<BarcodeScreen> {
   XFile? image;
   ImagePicker? imagePicker;
-  bool isPressed1 = true;
-  String headRotationX = '';
-  String headRotationY = '';
-  bool isFaceDetected = false;
-  bool isSmiling = false;
+  String text1 = "";
+  bool isPressed1 = false;
+  bool isPressed2 = false;
   bool isResult = false;
+  String? displayValue;
 
   Future pickImage(String a) async {
     image = await ImagePicker().pickImage(
@@ -58,49 +57,36 @@ class _FaceScreenState extends State<FaceScreen> {
     );
   }
 
-  void detectFace() async {
-    setState(() {
-      isFaceDetected = false;
-      isSmiling = false;
-      isPressed1 = true;
-      isResult = true;
-    });
+  Future getbarcode() async {
+    text1 = "";
     final inputImage = InputImage.fromFilePath(image!.path);
-
-    final faceDetector = FaceDetector(
-      options: FaceDetectorOptions(
-        enableClassification: true,
-        enableLandmarks: true,
-        enableContours: true,
-        enableTracking: true,
-      ),
-    );
-    final List<Face> faces = await faceDetector.processImage(inputImage);
-    if (faces.isNotEmpty) {
-      setState(() {
-        isFaceDetected = true;
-      });
-    }
-    for (Face face in faces) {
-      final double? rotX =
-          face.headEulerAngleX; // Head is tilted up and down rotX degrees
-      final double? rotY =
-          face.headEulerAngleY; // Head is rotated to the right rotY degrees
-      setState(() {
-        headRotationX = rotX.toString();
-        headRotationY = rotY.toString();
-      });
-      double? smileProb;
-      if (face.smilingProbability != null) {
-        smileProb = face.smilingProbability;
-
-        if (smileProb! > 0.5) {
-          setState(() {
-            isSmiling = true;
-          });
-        }
+    final List<BarcodeFormat> formate = [BarcodeFormat.all];
+    final barcodescanner = BarcodeScanner(formats: formate);
+    final List<Barcode> code = await barcodescanner.processImage(inputImage);
+    for (Barcode barcode in code) {
+      final type = barcode.type;
+      final String? displayValue = barcode.displayValue;
+      switch (type) {
+        case BarcodeType.wifi:
+          final barcodeWifi = barcode.value as BarcodeWifi;
+          print("r:$barcodeWifi");
+          break;
+        case BarcodeType.url:
+          final barcodeUrl = barcode.value as BarcodeUrl;
+          print("r:$barcodeUrl");
+          break;
+        default:
+          break;
       }
+      text1 += '${displayValue}';
+
+      setState(() {
+        isPressed1 = true;
+        isPressed2 = true;
+        isResult = true;
+      });
     }
+    barcodescanner.close();
   }
 
   @override
@@ -110,14 +96,16 @@ class _FaceScreenState extends State<FaceScreen> {
 
   @override
   Widget build(BuildContext context) {
-    FirebaseMessaging.onMessage.listen((event) {});
+    FirebaseMessaging.onMessage.listen((event) {
+      //print("eventtttt.... $event");
+    });
     return Scaffold(
       appBar: AppBar(
         title: GestureDetector(
           onTap: () {
             Navigator.of(context).pushReplacement(
               MaterialPageRoute(
-                builder: (ctx) => const FaceScreen(),
+                builder: (ctx) => const BarcodeScreen(),
               ),
             );
           },
@@ -145,7 +133,7 @@ class _FaceScreenState extends State<FaceScreen> {
                     : Column(
                         children: [
                           Container(
-                            width: 300,
+                            width: 350,
                             height: 250,
                             color: const Color.fromARGB(255, 246, 246, 246),
                             child: SizedBox(
@@ -205,84 +193,43 @@ class _FaceScreenState extends State<FaceScreen> {
                             ),
                           ),
                           const SizedBox(height: 20),
+                          const SizedBox(width: 5),
                           SizedBox(
                             height: 50,
                             width: 150,
                             child: Button(
-                              onButtonTap: detectFace,
-                              text: "Detect face",
-                              isPress: isPressed1,
+                              onButtonTap: getbarcode,
+                              text: "Barcode Scanner",
+                              isPress: isPressed2,
                             ),
                           ),
                         ],
                       ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 20),
                 isResult == true
-                    ? Column(
-                        children: [
-                          Container(
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                  color: const Color(0x33DE3535), width: 1),
-                              color: const Color(0x0CDE3535),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    children: [
-                                      const Text('Detected'),
-                                      Text(isFaceDetected ? 'Yes' : 'No'),
-                                    ],
-                                  ),
-                                  Row(
-                                    children: [
-                                      const Text('Facial expression'),
-                                      Text(
-                                        isSmiling ? 'Smiling' : 'Not Smiling',
-                                        style: const TextStyle(
-                                            color: Colors.red,
-                                            fontWeight: FontWeight.w600),
-                                      ),
-                                    ],
-                                  ),
-                                ],
+                    ? Container(
+                        height: 100,
+                        width: 200,
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                              color: const Color(0x33DE3535), width: 1),
+                          color: const Color(0x0CDE3535),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 25),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              const Text(
+                                'Result',
+                                style: TextStyle(fontWeight: FontWeight.w600),
                               ),
-                            ),
+                              const SizedBox(height: 10),
+                              //Text(text1),
+                              Text(text1 == "" ? "No barcode detected" : text1),
+                            ],
                           ),
-                          const SizedBox(height: 2),
-                          Container(
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                  color: const Color(0x33DE3535), width: 1),
-                              color: const Color(0x0CDE3535),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    children: [
-                                      const Text("Head Rotation in X axis"),
-                                      Text(headRotationX),
-                                    ],
-                                  ),
-                                  Row(
-                                    children: [
-                                      const Text('Head Rotation in Y axis'),
-                                      Text(
-                                        headRotationY,
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
+                        ),
                       )
                     : const SizedBox(),
               ],

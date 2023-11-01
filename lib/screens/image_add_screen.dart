@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:firebase_project/screens/language_detector_screen.dart';
 import 'package:firebase_project/screens/text_recognition_screen.dart';
 import 'package:firebase_project/widgets/home.dart';
 import 'package:flutter/material.dart';
@@ -173,7 +172,6 @@ class _ImageAddScreenState extends State<ImageAddScreen> {
                         onButtonTap: () {
                           modelBottomSheet(context);
                         },
-                      
                       )
                     : Column(
                         children: [
@@ -203,8 +201,7 @@ class _ImageAddScreenState extends State<ImageAddScreen> {
                                       width: 117,
                                       height: 40,
                                       decoration: BoxDecoration(
-                                        borderRadius:
-                                            BorderRadius.circular(50),
+                                        borderRadius: BorderRadius.circular(50),
                                       ),
                                       child: ElevatedButton.icon(
                                         onPressed: () {

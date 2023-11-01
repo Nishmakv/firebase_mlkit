@@ -14,22 +14,21 @@ class LanguageClass {
     for (IdentifiedLanguage identify in possibleLanguages) {
       String language = identify.languageTag;
       var confidence = identify.confidence;
-      // result += '$language';
-      // result1 += '$confidence';
+     
 
       switch (language) {
         case 'en':
           {
             result = 'en(English)';
             result1 = '$confidence';
-            //list.add(Data(result: 'en(English)', result1: '$confidence'));
+          
           }
           break;
         case 'ja':
           {
             result = 'ja(Japanade)';
             result1 = '$confidence';
-            //list.add(Data(result: 'ja(Japanade)', result1: '$confidence'));
+
           }
           break;
         case 'ch':
