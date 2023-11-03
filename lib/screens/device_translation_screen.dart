@@ -14,6 +14,7 @@ class _LanguageTranslationScreenState extends State<LanguageTranslationScreen> {
   String result = '';
   bool isPressed1 = true;
   bool isResult = false;
+  bool isIcon = false;
 
   String dropdownValue = "Select Language";
 
@@ -86,6 +87,7 @@ class _LanguageTranslationScreenState extends State<LanguageTranslationScreen> {
 
     setState(() {
       isResult = true;
+      isIcon = true;
     });
   }
 
@@ -150,13 +152,16 @@ class _LanguageTranslationScreenState extends State<LanguageTranslationScreen> {
                 }).toList(),
               ),
               const SizedBox(height: 20),
-              Button(
-                onButtonTap: () async {
-                  texttranslate(_control.text, dropdownValue);
-                },
-                text: 'Language Translation',
-                isPress: isPressed1,
-              ),
+             
+                   Button(
+                      onButtonTap: () async {
+                        texttranslate(_control.text, dropdownValue);
+                      },
+                      text: 'Language Translation',
+                      isPress: isPressed1,
+                        isIcon: false,
+                    ),
+               
               const SizedBox(height: 25),
               const SizedBox(width: 20),
               isResult == true

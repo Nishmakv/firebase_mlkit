@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_project/widgets/home.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:google_ml_kit/google_ml_kit.dart';
 import 'package:image_picker/image_picker.dart';
 import '../widgets/button.dart';
@@ -18,6 +17,7 @@ class _FaceScreenState extends State<FaceScreen> {
   XFile? image;
   ImagePicker? imagePicker;
   bool isPressed1 = true;
+
   String headRotationX = '';
   String headRotationY = '';
   bool isFaceDetected = false;
@@ -27,7 +27,9 @@ class _FaceScreenState extends State<FaceScreen> {
   Future pickImage(String a) async {
     image = await ImagePicker().pickImage(
         source: a == "Gallery" ? ImageSource.gallery : ImageSource.camera);
-    setState(() {});
+    setState(() {
+      detectFace();
+    });
   }
 
   void modelBottomSheet(context) {
@@ -41,6 +43,7 @@ class _FaceScreenState extends State<FaceScreen> {
                 leading: const Icon(Icons.photo_camera),
                 title: const Text('Camera'),
                 onTap: () {
+                  Navigator.pop(context);
                   pickImage('Camera');
                 },
               ),
@@ -48,9 +51,10 @@ class _FaceScreenState extends State<FaceScreen> {
                 leading: const Icon(Icons.photo),
                 title: const Text('Gallery'),
                 onTap: () {
+                  Navigator.pop(context);
                   pickImage('Gallery');
                 },
-              )
+              ),
             ],
           ),
         );
@@ -62,7 +66,7 @@ class _FaceScreenState extends State<FaceScreen> {
     setState(() {
       isFaceDetected = false;
       isSmiling = false;
-      isPressed1 = true;
+
       isResult = true;
     });
     final inputImage = InputImage.fromFilePath(image!.path);
@@ -144,63 +148,15 @@ class _FaceScreenState extends State<FaceScreen> {
                       )
                     : Column(
                         children: [
-                          Container(
-                            width: 300,
-                            height: 250,
-                            color: const Color.fromARGB(255, 246, 246, 246),
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                left: 20, right: 20, top: 20),
                             child: SizedBox(
-                              child: Stack(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                        left: 35, right: 35),
-                                    child: SizedBox(
-                                      height: 250,
-                                      width: 400,
-                                      child: Image.file(
-                                        File(image!.path),
-                                        fit: BoxFit.fill,
-                                      ),
-                                    ),
-                                  ),
-                                  Positioned(
-                                    bottom: 25,
-                                    left: 92,
-                                    child: Container(
-                                      width: 117,
-                                      height: 40,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(50),
-                                      ),
-                                      child: ElevatedButton.icon(
-                                        onPressed: () {
-                                          modelBottomSheet(context);
-                                        },
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: Colors.white,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(20),
-                                          ),
-                                        ),
-                                        icon: const Icon(
-                                          Icons.cloud_upload_outlined,
-                                          color: Colors.black,
-                                        ),
-                                        label: Text(
-                                          'Change',
-                                          style: GoogleFonts.poppins(
-                                            textStyle: const TextStyle(
-                                              color: Color(0xFF1B1B1F),
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w500,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
+                              height: 250,
+                              width: 350,
+                              child: Image.file(
+                                File(image!.path),
+                                fit: BoxFit.cover,
                               ),
                             ),
                           ),
@@ -209,9 +165,12 @@ class _FaceScreenState extends State<FaceScreen> {
                             height: 50,
                             width: 150,
                             child: Button(
-                              onButtonTap: detectFace,
-                              text: "Detect face",
+                              onButtonTap: () {
+                                modelBottomSheet(context);
+                              },
+                              text: "Change",
                               isPress: isPressed1,
+                              isIcon: true,
                             ),
                           ),
                         ],
@@ -234,12 +193,15 @@ class _FaceScreenState extends State<FaceScreen> {
                                   Row(
                                     children: [
                                       const Text('Detected'),
+                                      SizedBox(width: 100),
                                       Text(isFaceDetected ? 'Yes' : 'No'),
                                     ],
                                   ),
+                                  SizedBox(height: 10),
                                   Row(
                                     children: [
                                       const Text('Facial expression'),
+                                      SizedBox(width: 46),
                                       Text(
                                         isSmiling ? 'Smiling' : 'Not Smiling',
                                         style: const TextStyle(
@@ -270,6 +232,7 @@ class _FaceScreenState extends State<FaceScreen> {
                                       Text(headRotationX),
                                     ],
                                   ),
+                                  SizedBox(height: 10),
                                   Row(
                                     children: [
                                       const Text('Head Rotation in Y axis'),

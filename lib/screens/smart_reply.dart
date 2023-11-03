@@ -10,7 +10,7 @@ class SmartReplyScreen extends StatefulWidget {
 }
 
 class SmartReplyScreenState extends State<SmartReplyScreen> {
-  
+  List reply = [];
   bool isPressed1 = true;
 
   final _control = TextEditingController();
@@ -18,6 +18,7 @@ class SmartReplyScreenState extends State<SmartReplyScreen> {
 
   Future getsmartreply(String msg) async {
     result1 = "";
+    reply = [];
 
     final SmartReply smartreply = SmartReply();
     smartreply.addMessageToConversationFromLocalUser(
@@ -25,14 +26,14 @@ class SmartReplyScreenState extends State<SmartReplyScreen> {
     final response = await smartreply.suggestReplies();
     for (final suggestReplies in response.suggestions) {
       String text = suggestReplies;
-      // reply.add(text);
+      reply.add(text);
+
       result1 += "| $text |";
-      // result1 += '${text}';
-      // print(result1);
     }
-    print(result1);
-    smartreply.close();
     setState(() {});
+
+    smartreply.close();
+    return response;
   }
 
   @override
@@ -76,6 +77,7 @@ class SmartReplyScreenState extends State<SmartReplyScreen> {
                 },
                 text: 'Smart Reply',
                 isPress: isPressed1,
+                  isIcon: false,
               ),
               const SizedBox(height: 25),
               const SizedBox(width: 20),
@@ -84,8 +86,33 @@ class SmartReplyScreenState extends State<SmartReplyScreen> {
                 height: 80,
                 child: Column(
                   children: [
-                    Card(
-                      child: Text(result1),
+                    Expanded(
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        shrinkWrap: true,
+                        itemCount: reply.length,
+                        itemBuilder: (context, index) {
+                          return Padding(
+                            padding: const EdgeInsets.only(left: 10),
+                            child: Container(
+                              width: 90,
+                              decoration: BoxDecoration(
+                                  border: Border.all(
+                                color: Colors.blue,
+                              ),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  "${reply[index]}",
+                                  style: const TextStyle(
+                                    fontSize: 20,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
                     ),
                   ],
                 ),

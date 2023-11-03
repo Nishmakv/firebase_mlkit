@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_project/widgets/home.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+
 import 'package:google_ml_kit/google_ml_kit.dart';
 import 'package:image_picker/image_picker.dart';
 import '../widgets/button.dart';
@@ -18,15 +18,16 @@ class _BarcodeScreenState extends State<BarcodeScreen> {
   XFile? image;
   ImagePicker? imagePicker;
   String text1 = "";
-  bool isPressed1 = false;
-  bool isPressed2 = false;
+  bool isPressed1 = true;
   bool isResult = false;
   String? displayValue;
 
   Future pickImage(String a) async {
     image = await ImagePicker().pickImage(
         source: a == "Gallery" ? ImageSource.gallery : ImageSource.camera);
-    setState(() {});
+    setState(() {
+      getbarcode();
+    });
   }
 
   void modelBottomSheet(context) {
@@ -41,12 +42,14 @@ class _BarcodeScreenState extends State<BarcodeScreen> {
                 title: const Text('Camera'),
                 onTap: () {
                   pickImage('Camera');
+                  Navigator.pop(context);
                 },
               ),
               ListTile(
                 leading: const Icon(Icons.photo),
                 title: const Text('Gallery'),
                 onTap: () {
+                  Navigator.pop(context);
                   pickImage('Gallery');
                 },
               )
@@ -81,8 +84,6 @@ class _BarcodeScreenState extends State<BarcodeScreen> {
       text1 += '${displayValue}';
 
       setState(() {
-        isPressed1 = true;
-        isPressed2 = true;
         isResult = true;
       });
     }
@@ -132,103 +133,55 @@ class _BarcodeScreenState extends State<BarcodeScreen> {
                       )
                     : Column(
                         children: [
-                          Container(
-                            width: 350,
-                            height: 250,
-                            color: const Color.fromARGB(255, 246, 246, 246),
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                left: 20, right: 20, top: 20),
                             child: SizedBox(
-                              child: Stack(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                        left: 35, right: 35),
-                                    child: SizedBox(
-                                      height: 250,
-                                      width: 400,
-                                      child: Image.file(
-                                        File(image!.path),
-                                        fit: BoxFit.fill,
-                                      ),
-                                    ),
-                                  ),
-                                  Positioned(
-                                    bottom: 25,
-                                    left: 92,
-                                    child: Container(
-                                      width: 117,
-                                      height: 40,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(50),
-                                      ),
-                                      child: ElevatedButton.icon(
-                                        onPressed: () {
-                                          modelBottomSheet(context);
-                                        },
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: Colors.white,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(20),
-                                          ),
-                                        ),
-                                        icon: const Icon(
-                                          Icons.cloud_upload_outlined,
-                                          color: Colors.black,
-                                        ),
-                                        label: Text(
-                                          'Change',
-                                          style: GoogleFonts.poppins(
-                                            textStyle: const TextStyle(
-                                              color: Color(0xFF1B1B1F),
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w500,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
+                              height: 250,
+                              width: 350,
+                              child: Image.file(
+                                File(image!.path),
+                                fit: BoxFit.cover,
                               ),
                             ),
                           ),
-                          const SizedBox(height: 20),
-                          const SizedBox(width: 5),
+                          const SizedBox(height: 10),
+                        
                           SizedBox(
                             height: 50,
                             width: 150,
                             child: Button(
-                              onButtonTap: getbarcode,
-                              text: "Barcode Scanner",
-                              isPress: isPressed2,
+                              onButtonTap: () {
+                                modelBottomSheet(context);
+                              },
+                              text: "Change",
+                              isPress: isPressed1,
+                              isIcon: true,
                             ),
                           ),
                         ],
                       ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 10),
                 isResult == true
                     ? Container(
-                        height: 100,
-                        width: 200,
+                        height: 80,
+                        width: 180,
                         decoration: BoxDecoration(
                           border: Border.all(
                               color: const Color(0x33DE3535), width: 1),
                           color: const Color(0x0CDE3535),
                         ),
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 25),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              const Text(
-                                'Result',
-                                style: TextStyle(fontWeight: FontWeight.w600),
-                              ),
-                              const SizedBox(height: 10),
-                              //Text(text1),
-                              Text(text1 == "" ? "No barcode detected" : text1),
-                            ],
-                          ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text(
+                              'Result',
+                              style: TextStyle(fontWeight: FontWeight.w600),
+                            ),
+                            const SizedBox(height: 10),
+                            //Text(text1),
+                            Text(text1 == "" ? "No barcode detected" : text1),
+                          ],
                         ),
                       )
                     : const SizedBox(),

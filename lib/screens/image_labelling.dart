@@ -3,7 +3,6 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_project/widgets/home.dart';
 import 'package:firebase_project/widgets/label_display.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:google_ml_kit/google_ml_kit.dart';
 import 'package:image_picker/image_picker.dart';
 import '../widgets/button.dart';
@@ -24,7 +23,9 @@ class ImageLabellingScreenState extends State<ImageLabellingScreen> {
   Future pickImage(String a) async {
     image = await ImagePicker().pickImage(
         source: a == "Gallery" ? ImageSource.gallery : ImageSource.camera);
-    setState(() {});
+    setState(() {
+      getImagelabel();
+    });
   }
 
   void modelBottomSheet(context) {
@@ -38,6 +39,7 @@ class ImageLabellingScreenState extends State<ImageLabellingScreen> {
                 leading: const Icon(Icons.photo_camera),
                 title: const Text('Camera'),
                 onTap: () {
+                  Navigator.pop(context);
                   pickImage('Camera');
                 },
               ),
@@ -45,6 +47,7 @@ class ImageLabellingScreenState extends State<ImageLabellingScreen> {
                 leading: const Icon(Icons.photo),
                 title: const Text('Gallery'),
                 onTap: () {
+                  Navigator.pop(context);
                   pickImage('Gallery');
                 },
               )
@@ -121,63 +124,15 @@ class ImageLabellingScreenState extends State<ImageLabellingScreen> {
                       )
                     : Column(
                         children: [
-                          Container(
-                            width: 300,
-                            height: 250,
-                            color: const Color.fromARGB(255, 246, 246, 246),
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                left: 20, right: 20, top: 20),
                             child: SizedBox(
-                              child: Stack(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                        left: 35, right: 35),
-                                    child: SizedBox(
-                                      height: 250,
-                                      width: 400,
-                                      child: Image.file(
-                                        File(image!.path),
-                                        fit: BoxFit.fill,
-                                      ),
-                                    ),
-                                  ),
-                                  Positioned(
-                                    bottom: 25,
-                                    left: 92,
-                                    child: Container(
-                                      width: 117,
-                                      height: 40,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(50),
-                                      ),
-                                      child: ElevatedButton.icon(
-                                        onPressed: () {
-                                          modelBottomSheet(context);
-                                        },
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: Colors.white,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(20),
-                                          ),
-                                        ),
-                                        icon: const Icon(
-                                          Icons.cloud_upload_outlined,
-                                          color: Colors.black,
-                                        ),
-                                        label: Text(
-                                          'Change',
-                                          style: GoogleFonts.poppins(
-                                            textStyle: const TextStyle(
-                                              color: Color(0xFF1B1B1F),
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w500,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
+                              height: 250,
+                              width: 350,
+                              child: Image.file(
+                                File(image!.path),
+                                fit: BoxFit.cover,
                               ),
                             ),
                           ),
@@ -187,10 +142,11 @@ class ImageLabellingScreenState extends State<ImageLabellingScreen> {
                             width: 150,
                             child: Button(
                               onButtonTap: () {
-                                getImagelabel();
+                                modelBottomSheet(context);
                               },
-                              text: "Detect Image",
+                              text: "Change",
                               isPress: isPressed1,
+                              isIcon: true,
                             ),
                           ),
                         ],
@@ -201,8 +157,7 @@ class ImageLabellingScreenState extends State<ImageLabellingScreen> {
                   children: [
                     Container(
                       decoration: const BoxDecoration(
-                       
-                        color:  Color(0x0CDE3535),
+                        color: Color(0x0CDE3535),
                       ),
                       child: ListView.builder(
                           physics: const NeverScrollableScrollPhysics(),

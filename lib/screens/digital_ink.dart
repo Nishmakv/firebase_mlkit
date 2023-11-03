@@ -1,5 +1,4 @@
 import 'package:firebase_project/data/digital_ink_function.dart';
-import 'package:firebase_project/widgets/button.dart';
 import 'package:flutter/material.dart' hide Ink;
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_mlkit_digital_ink_recognition/google_mlkit_digital_ink_recognition.dart';
@@ -17,9 +16,12 @@ class _SignatureCanvasState extends State<SignatureCanvas> {
   final _digitalInkRecognizer = DigitalInkRecognizer(languageCode: 'en');
   final Ink ink = Ink();
   List<StrokePoint> _points = [];
-  String _recognizedText = '';
+  List<String> _recognizedPoints = [];
+
   bool isPressed1 = false;
   bool isPressed2 = false;
+  bool isEmpty = true;
+  bool isData = false;
   InkClass data = InkClass();
 
   @override
@@ -51,107 +53,155 @@ class _SignatureCanvasState extends State<SignatureCanvas> {
         child: Column(
           children: [
             const SizedBox(height: 20),
+            GestureDetector(
+              onPanStart: (DragStartDetails details) {
+                ink.strokes.add(Stroke());
+              },
+              onPanUpdate: (DragUpdateDetails details) {
+                setState(() {
+                  isEmpty = false;
+                  final RenderObject? object = context.findRenderObject();
+                  final localPosition = (object as RenderBox?)
+                      ?.globalToLocal(details.localPosition);
+                  if (localPosition != null) {
+                    _points = List.from(_points)
+                      ..add(StrokePoint(
+                        x: localPosition.dx,
+                        y: localPosition.dy,
+                        t: DateTime.now().millisecondsSinceEpoch,
+                      ));
+                  }
+                  if (ink.strokes.isNotEmpty) {
+                    ink.strokes.last.points = _points.toList();
+                  }
+                });
+              },
+              onPanEnd: (DragEndDetails details) {
+                _points.clear();
+                setState(() {});
+              },
+              child: Container(
+                width: 330,
+                height: 300,
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.blue),
+                ),
+                child: CustomPaint(
+                  //widget used to give colour to the drawing.
+                  painter: Signature(ink: ink),
+                ),
+              ),
+            ),
+            const SizedBox(height: 25),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Row(
                 children: [
                   Expanded(
-                    child: Button(
-                      onButtonTap: () async {
-                        // data.recogniseText(language, ink);
+                    child: GestureDetector(
+                      onTap: () async {
+                      
 
-                        // showDialog(
-                        //   context: context,
-                        //   builder: (context) => const AlertDialog(
-                        //     title: Text('Recognizing'),
-                        //   ),
-                        //   barrierDismissible: true,
-                        // );
-                        _recognizedText =
+                        
+                        _recognizedPoints =
                             await data.recogniseText(language, ink);
-                        setState(
-                          () {
-                            isPressed1 = true;
-                            isPressed2 = false;
-                          },
-                        );
+
+                        setState(() {});
                       },
-                      //onButtonTap: _recogniseText,
-                      text: 'Detect Text',
-                      isPress: isPressed1,
+                      child: Container(
+                        height: 55,
+                        width: 200,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(7),
+                          color: isEmpty
+                              ? const Color(0xFFF6F6F6)
+                              : const Color(0xFFDE3535),
+                        ),
+                        child: Center(
+                          child: Text(
+                            'Detect Text',
+                            style: TextStyle(
+                              color: isEmpty ? Colors.black : Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                   const SizedBox(width: 10),
                   Expanded(
-                    child: Button(
-                        onButtonTap: _clearPad,
-                        text: 'Clear Pad',
-                        isPress: isPressed2),
+                    child: GestureDetector(
+                      onTap: _clearPad,
+                      child: Container(
+                        height: 55,
+                        width: 200,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(7),
+                          color: isEmpty
+                              ? const Color(0xFFF6F6F6)
+                              : const Color(0xFFDE3535),
+                        ),
+                        child: Center(
+                          child: Text(
+                            'Clear Pad',
+                            style: TextStyle(
+                              color: isEmpty ? Colors.black : Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
                 ],
               ),
             ),
-            Expanded(
-              child: GestureDetector(
-                onPanStart: (DragStartDetails details) {
-                  ink.strokes.add(Stroke());
-                },
-                onPanUpdate: (DragUpdateDetails details) {
-                  setState(() {
-                    final RenderObject? object = context.findRenderObject();
-                    final localPosition = (object as RenderBox?)
-                        ?.globalToLocal(details.localPosition);
-                    if (localPosition != null) {
-                      _points = List.from(_points)
-                        ..add(StrokePoint(
-                          x: localPosition.dx,
-                          y: localPosition.dy,
-                          t: DateTime.now().millisecondsSinceEpoch,
-                        ));
-                    }
-                    if (ink.strokes.isNotEmpty) {
-                      ink.strokes.last.points = _points.toList();
-                    }
-                  });
-                },
-                onPanEnd: (DragEndDetails details) {
-                  _points.clear();
-                  setState(() {});
-                },
-                child: CustomPaint(
-                  painter: Signature(ink: ink),
-                  size: Size.infinite,
-                ),
-              ),
-            ),
-            if (_recognizedText.isNotEmpty)
+            if (_recognizedPoints.isNotEmpty)
               Expanded(
                   child: Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: SizedBox(
-                  width: double.infinity,
-                  child: Container(
-                    color: const Color.fromARGB(5, 222, 54, 54),
-                    child: Padding(
-                      padding: const EdgeInsets.all(10),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Candidates',
-                            style: GoogleFonts.inter(
-                              textStyle: const TextStyle(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 16,
-                              ),
+                child: Container(
+                  color: const Color.fromARGB(5, 222, 54, 54),
+                  child: Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Result',
+                          style: GoogleFonts.inter(
+                            textStyle: const TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 16,
                             ),
                           ),
-                          const SizedBox(height: 10),
-                          SizedBox(
-                            child: Text(_recognizedText),
+                        ),
+                        const SizedBox(height: 10),
+                        SizedBox(
+                          height: 150,
+                          child: ListView.builder(
+                            itemCount: 3,
+                            itemBuilder: (context, index) {
+                              return Padding(
+                                padding: EdgeInsets.symmetric(vertical: 5.0),
+                                child: Row(
+                                  children: [
+                                    const Text(
+                                      '• ',
+                                      style: TextStyle(fontSize: 20),
+                                    ),
+                                    Expanded(
+                                      child: Text(
+                                        _recognizedPoints[index],
+                                        style: TextStyle(fontSize: 16),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
@@ -166,7 +216,9 @@ class _SignatureCanvasState extends State<SignatureCanvas> {
     setState(() {
       ink.strokes.clear();
       _points.clear();
-      _recognizedText = '';
+      isEmpty = true;
+
+      _recognizedPoints.clear();
       isPressed1 = false;
       isPressed2 = true;
     });
@@ -181,14 +233,15 @@ class Signature extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final Paint paint = Paint()
-      ..color = Colors.red
+      ..color = Colors.blue
       ..strokeCap = StrokeCap.round
-      ..strokeWidth = 4.0;
+      ..strokeWidth = 4.0; //to control the text weight
 
     for (final stroke in ink.strokes) {
       for (int i = 0; i < stroke.points.length - 1; i++) {
         final p1 = stroke.points[i];
         final p2 = stroke.points[i + 1];
+
         canvas.drawLine(Offset(p1.x.toDouble(), p1.y.toDouble()),
             Offset(p2.x.toDouble(), p2.y.toDouble()), paint);
       }

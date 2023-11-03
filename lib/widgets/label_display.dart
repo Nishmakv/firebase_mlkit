@@ -12,20 +12,11 @@ class LabelDisplay extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8.0),
       child: Container(
-          decoration: ShapeDecoration(
-            color: const Color(0xFFF9F9F9),
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-            shadows: const [
-              BoxShadow(
-                color: Color(0x3F000000),
-                blurRadius: 1,
-                offset: Offset(0, 0),
-                spreadRadius: 0,
-              )
-            ],
-          ),
           height: 50,
+          decoration: BoxDecoration(
+            border: Border.all(color: const Color(0x33DE3535), width: 1),
+            color: const Color(0x0CDE3535),
+          ),
           child: Row(
             children: [
               const SizedBox(

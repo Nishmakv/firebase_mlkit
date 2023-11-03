@@ -62,6 +62,7 @@ class _LanguageDetectorState extends State<LanguageDetector> {
                 },
                 text: 'Language detection',
                 isPress: isPressed1,
+                  isIcon: false,
               ),
               const SizedBox(height: 25),
               const SizedBox(width: 20),
