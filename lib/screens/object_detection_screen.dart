@@ -1,7 +1,8 @@
 import 'dart:io';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:firebase_project/data/object_detection_list.dart';
 import 'package:firebase_project/widgets/home.dart';
-import 'package:firebase_project/widgets/label_display.dart';
+import 'package:firebase_project/widgets/object_display.dart';
 import 'package:flutter/material.dart';
 import 'package:google_ml_kit/google_ml_kit.dart';
 import 'package:image_picker/image_picker.dart';
@@ -18,7 +19,7 @@ class ObjectDetectionScreenState extends State<ObjectDetectionScreen> {
   XFile? image;
   ImagePicker? imagePicker;
   bool isPressed1 = true;
-  List list = [];
+  List<ObjectClass> list = [];
   Future pickImage(String a) async {
     image = await ImagePicker().pickImage(
         source: a == "Gallery" ? ImageSource.gallery : ImageSource.camera);
@@ -57,12 +58,12 @@ class ObjectDetectionScreenState extends State<ObjectDetectionScreen> {
   }
 
   String? text;
-  String result = "";
+  // String result = "";
 
   Future getobjectdetect() async {
     setState(() {
       list = [];
-      result = '';
+      // result = '';
     });
 
     final inputImage = InputImage.fromFilePath(image!.path);
@@ -83,12 +84,8 @@ class ObjectDetectionScreenState extends State<ObjectDetectionScreen> {
         // String confi=confidence.toString();
         int index = label.index;
         setState(() {
-          result =
-              "Category: $text\n$rect\nTrackinId: $trackingId\nConfidence: ${confidence.toStringAsFixed(2)}\nIndex: $index";
-          list.add(result);
+          list.add(ObjectClass(category: text, confidence: confidence));
         });
-
-        print(result);
       }
     }
   }
@@ -102,6 +99,7 @@ class ObjectDetectionScreenState extends State<ObjectDetectionScreen> {
   Widget build(BuildContext context) {
     FirebaseMessaging.onMessage.listen((event) {});
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: GestureDetector(
           onTap: () {
@@ -161,20 +159,22 @@ class ObjectDetectionScreenState extends State<ObjectDetectionScreen> {
                           ),
                         ],
                       ),
-
+                const SizedBox(height: 20),
                 Column(
                   children: [
                     ListView.builder(
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: list.length,
-                        shrinkWrap: true,
-                        itemBuilder: (context, index) {
-                          return LabelDisplay(
-                              label: list[index], isSelect: true);
-                        })
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: list.length,
+                      shrinkWrap: true,
+                      itemBuilder: (context, index) {
+                        return ObjectDisplay(
+                            label: list[index].category,
+                            isSelect: true,
+                            accuracy: list[index].confidence);
+                      },
+                    ),
                   ],
                 )
-                //  : const SizedBox(),
               ],
             ),
           ),

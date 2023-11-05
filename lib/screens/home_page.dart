@@ -1,3 +1,4 @@
+import 'package:firebase_project/screens/login_screen.dart';
 import 'package:firebase_project/widgets/grid.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -9,6 +10,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+       backgroundColor: Colors.white,
       drawer: Drawer(),
       appBar: AppBar(
         bottom: PreferredSize(
@@ -47,21 +49,30 @@ class HomePage extends StatelessWidget {
                 ),
               ],
             ),
-            Container(
-              width: 100,
-              height: 48,
-              decoration: BoxDecoration(
-                color: const Color(0xFF0073E6),
-                borderRadius: BorderRadius.circular(34),
-              ),
-              child: Center(
-                child: Text(
-                  'Login',
-                  style: GoogleFonts.inter(
-                    textStyle: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.white,
+            GestureDetector(
+              onTap: () {
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(
+                    builder: (ctx) => LoginScreen(),
+                  ),
+                );
+              },
+              child: Container(
+                width: 100,
+                height: 48,
+                decoration: BoxDecoration(
+                  color: const Color(0xFF0073E6),
+                  borderRadius: BorderRadius.circular(34),
+                ),
+                child: Center(
+                  child: Text(
+                    'Login',
+                    style: GoogleFonts.inter(
+                      textStyle: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                 ),

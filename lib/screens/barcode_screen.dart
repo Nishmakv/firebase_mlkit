@@ -101,6 +101,7 @@ class _BarcodeScreenState extends State<BarcodeScreen> {
       //print("eventtttt.... $event");
     });
     return Scaffold(
+       backgroundColor: Colors.white,
       appBar: AppBar(
         title: GestureDetector(
           onTap: () {

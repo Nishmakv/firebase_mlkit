@@ -33,6 +33,7 @@ class _SignatureCanvasState extends State<SignatureCanvas> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+       backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text(
           'Digital Ink Recognition',
@@ -59,6 +60,7 @@ class _SignatureCanvasState extends State<SignatureCanvas> {
               },
               onPanUpdate: (DragUpdateDetails details) {
                 setState(() {
+                  isData = true;
                   isEmpty = false;
                   final RenderObject? object = context.findRenderObject();
                   final localPosition = (object as RenderBox?)
@@ -100,13 +102,19 @@ class _SignatureCanvasState extends State<SignatureCanvas> {
                   Expanded(
                     child: GestureDetector(
                       onTap: () async {
-                      
+                        if (ink.strokes.isNotEmpty) {
+                          _recognizedPoints =
+                              await data.recogniseText(language, ink);
 
-                        
-                        _recognizedPoints =
-                            await data.recogniseText(language, ink);
-
-                        setState(() {});
+                          setState(() {});
+                        } else {
+                          // null;
+                          const snackBar = SnackBar(
+                            content: Text('Your canvas is empty'),
+                          );
+                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                          setState(() {});
+                        }
                       },
                       child: Container(
                         height: 55,

@@ -1,14 +1,14 @@
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
+ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_project/screens/home_page.dart';
 import 'package:flutter/material.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await Firebase.initializeApp();
+ await Firebase.initializeApp();
 
-  final fcmToken = await FirebaseMessaging.instance.getToken();
+  final fcmToken =  await FirebaseMessaging.instance.getToken();
   
   
   runApp(const MyApp());

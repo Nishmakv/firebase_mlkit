@@ -26,12 +26,17 @@ class _HomeScreenState extends State<HomeScreen> {
               image: AssetImage('assets/images/Group 30802.png'),
             ),
           ),
-          Center(
+          Padding(
+            padding: const EdgeInsets.only(
+              left: 28,
+              right: 28,
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Image detection identifies objects and patterns',
+                  'Image detection identifies objects and patterns in pictures,while facial-analysis faces and their attributes.',
+                  textAlign: TextAlign.center,
                   style: GoogleFonts.poppins(
                     textStyle: const TextStyle(
                       color: Colors.black,
@@ -40,28 +45,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                 ),
-                Text(
-                  'in pictures,while facial-analysis faces',
-                  style: GoogleFonts.poppins(
-                    textStyle: const TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 5),
-                Padding(
-                  padding: const EdgeInsets.only(left: 85),
-                  child: Text(
-                    'and their attributes.',
-                    style: GoogleFonts.poppins(
-                      textStyle: const TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                  ),
-                ),
+               
               ],
             ),
           ),

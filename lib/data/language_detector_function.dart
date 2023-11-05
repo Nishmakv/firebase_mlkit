@@ -13,7 +13,7 @@ class LanguageClass {
 
     for (IdentifiedLanguage identify in possibleLanguages) {
       String language = identify.languageTag;
-      var confidence = identify.confidence;
+      var confidence = identify.confidence.toStringAsFixed(2);
 
       switch (language) {
         case 'en':
@@ -22,21 +22,27 @@ class LanguageClass {
             result1 = '$confidence';
           }
           break;
-        case 'ja':
+        case 'ja-Latn':
           {
             result = 'ja(Japanese)';
             result1 = '$confidence';
           }
           break;
-        case 'ch':
+        case 'zh-Latn':
           {
             result = 'ch(Chinese)';
             result1 = '$confidence';
           }
           break;
-        case 'kr':
+        case 'k0':
           {
-            result = 'kr(Korean)';
+            result = 'ko(Korean)';
+            result1 = '$confidence';
+          }
+          break;
+        case 'und':
+          {
+            result = 'Undefined';
             result1 = '$confidence';
           }
       }

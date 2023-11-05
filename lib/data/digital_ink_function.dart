@@ -12,7 +12,7 @@ class InkClass {
 
     for (final candidate in candidates) {
       _recognisedpoints.add(candidate.text);
-      // recognizedText += '\n${candidate.text}';
+      
     }
     print(_recognisedpoints);
     return _recognisedpoints;

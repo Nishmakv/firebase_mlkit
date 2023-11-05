@@ -75,7 +75,8 @@ class ImageLabellingScreenState extends State<ImageLabellingScreen> {
       double confidence = label.confidence;
       int index = label.index;
       setState(() {
-        result = "$text :: $confidence :: $index\n";
+        // result = "$text :: $confidence :: $index\n";
+        result = "$text";
         list.add(result);
       });
     }
@@ -92,10 +93,11 @@ class ImageLabellingScreenState extends State<ImageLabellingScreen> {
   Widget build(BuildContext context) {
     FirebaseMessaging.onMessage.listen((event) {});
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: GestureDetector(
           onTap: () {
-            Navigator.of(context).pushReplacement(
+            Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (ctx) => const ImageLabellingScreen(),
               ),
@@ -152,7 +154,7 @@ class ImageLabellingScreenState extends State<ImageLabellingScreen> {
                         ],
                       ),
                 const SizedBox(height: 10),
-                // isResult == true
+              
                 Column(
                   children: [
                     Container(

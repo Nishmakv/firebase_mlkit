@@ -91,6 +91,7 @@ class _TextScreenState extends State<TextScreen> {
       //print("eventtttt.... $event");
     });
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: GestureDetector(
           onTap: () {

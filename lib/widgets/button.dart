@@ -35,13 +35,15 @@ class Button extends StatelessWidget {
                     color: Colors.white,
                   )
                 : const SizedBox(),
-            const SizedBox(width: 15),
-            Text(
-              text,
-              style: GoogleFonts.poppins(
-                textStyle: TextStyle(
-                  color: isPress ? Colors.white : Colors.black,
-                  fontSize: 16,
+            isIcon == true ? SizedBox(width: 15) : SizedBox(),
+            Center(
+              child: Text(
+                text,
+                style: GoogleFonts.poppins(
+                  textStyle: TextStyle(
+                    color: isPress ? Colors.white : Colors.black,
+                    fontSize: 16,
+                  ),
                 ),
               ),
             ),

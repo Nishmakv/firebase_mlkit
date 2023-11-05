@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_project/widgets/home.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:google_ml_kit/google_ml_kit.dart';
 import 'package:image_picker/image_picker.dart';
 import '../widgets/button.dart';
@@ -91,8 +92,8 @@ class _FaceScreenState extends State<FaceScreen> {
       final double? rotY =
           face.headEulerAngleY; // Head is rotated to the right rotY degrees
       setState(() {
-        headRotationX = rotX.toString();
-        headRotationY = rotY.toString();
+        headRotationX = rotX!.toStringAsFixed(2);
+        headRotationY = rotY!.toStringAsFixed(2);
       });
       double? smileProb;
       if (face.smilingProbability != null) {
@@ -116,6 +117,7 @@ class _FaceScreenState extends State<FaceScreen> {
   Widget build(BuildContext context) {
     FirebaseMessaging.onMessage.listen((event) {});
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: GestureDetector(
           onTap: () {
@@ -179,69 +181,122 @@ class _FaceScreenState extends State<FaceScreen> {
                 isResult == true
                     ? Column(
                         children: [
-                          Container(
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                  color: const Color(0x33DE3535), width: 1),
-                              color: const Color(0x0CDE3535),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    children: [
-                                      const Text('Detected'),
-                                      SizedBox(width: 100),
-                                      Text(isFaceDetected ? 'Yes' : 'No'),
-                                    ],
-                                  ),
-                                  SizedBox(height: 10),
-                                  Row(
-                                    children: [
-                                      const Text('Facial expression'),
-                                      SizedBox(width: 46),
-                                      Text(
-                                        isSmiling ? 'Smiling' : 'Not Smiling',
-                                        style: const TextStyle(
-                                            color: Colors.red,
-                                            fontWeight: FontWeight.w600),
-                                      ),
-                                    ],
-                                  ),
-                                ],
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 8.0),
+                            child: Container(
+                              height: 120,
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                    color: const Color(0x33DE3535), width: 1),
+                                color: const Color(0x0CDE3535),
+                                borderRadius: BorderRadius.circular(5),
                               ),
-                            ),
-                          ),
-                          const SizedBox(height: 2),
-                          Container(
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                  color: const Color(0x33DE3535), width: 1),
-                              color: const Color(0x0CDE3535),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    children: [
-                                      const Text("Head Rotation in X axis"),
-                                      Text(headRotationX),
-                                    ],
-                                  ),
-                                  SizedBox(height: 10),
-                                  Row(
-                                    children: [
-                                      const Text('Head Rotation in Y axis'),
-                                      Text(
-                                        headRotationY,
-                                      ),
-                                    ],
-                                  ),
-                                ],
+                              child: Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Text(
+                                          'Face Detected',
+                                          style: GoogleFonts.inter(
+                                            textStyle: const TextStyle(
+                                              fontWeight: FontWeight.w400,
+                                              fontSize: 13,
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(width: 50),
+                                        Text(
+                                          isFaceDetected ? 'Yes' : 'No',
+                                          style: GoogleFonts.inter(
+                                            textStyle: const TextStyle(
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 13,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 10),
+                                    Row(
+                                      children: [
+                                        Text(
+                                          'Facial Expression',
+                                          style: GoogleFonts.inter(
+                                            textStyle: const TextStyle(
+                                              fontWeight: FontWeight.w400,
+                                              fontSize: 13,
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(width: 35),
+                                        Text(
+                                          isSmiling ? 'Smiling' : 'Not Smiling',
+                                          style: GoogleFonts.inter(
+                                            textStyle: const TextStyle(
+                                              color: Color(
+                                                (0xFFDE3535),
+                                              ),
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 13,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 10),
+                                    Row(
+                                      children: [
+                                        Text(
+                                          'Head Rotation X',
+                                          style: GoogleFonts.inter(
+                                            textStyle: const TextStyle(
+                                              fontWeight: FontWeight.w400,
+                                              fontSize: 13,
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(width: 37),
+                                        Text(
+                                          headRotationX,
+                                          style: GoogleFonts.inter(
+                                            textStyle: const TextStyle(
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 13,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 10),
+                                    Row(
+                                      children: [
+                                        Text(
+                                          'Head Rotation Y',
+                                          style: GoogleFonts.inter(
+                                            textStyle: const TextStyle(
+                                              fontWeight: FontWeight.w400,
+                                              fontSize: 13,
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(width: 37),
+                                        Text(
+                                          headRotationY,
+                                          style: GoogleFonts.inter(
+                                            textStyle: const TextStyle(
+                                              color: Color(0xFFDE3535),
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 13,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
