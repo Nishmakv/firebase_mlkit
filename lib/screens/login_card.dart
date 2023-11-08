@@ -27,6 +27,7 @@ class LoginCard extends StatefulWidget {
 
 class _LoginCardState extends State<LoginCard> {
   bool _obscureText = true;
+@override
 
   @override
   Widget build(BuildContext context) {

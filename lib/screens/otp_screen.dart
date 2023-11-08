@@ -1,9 +1,9 @@
-import 'dart:async';
-
+import 'package:firebase_project/screens/forgot_password.dart';
 import 'package:firebase_project/screens/login_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_countdown_timer/countdown.dart';
-import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
+import 'package:timer_count_down/timer_controller.dart';
+import 'package:timer_count_down/timer_count_down.dart';
+
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pinput/pinput.dart';
 
@@ -17,32 +17,12 @@ class OtpScreen extends StatefulWidget {
 class _OtpScreenState extends State<OtpScreen> {
   bool isClick = false;
   bool isColour = false;
-  Timer? _timer;
-  int _secondsRemaining = 30;
+
+  final CountdownController _controller = CountdownController(autoStart: true);
 
   @override
   void initState() {
     super.initState();
-  }
-
-  void startTimer() {
-    _secondsRemaining = 30;
-    if (_timer != null) {
-      _timer!.cancel();
-    }
-    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
-      setState(() {
-        if (_secondsRemaining > 0) {
-          _secondsRemaining;
-        } else {
-          _timer!.cancel();
-        }
-      });
-    });
-  }
-
-  void requestNewOTP() {
-    startTimer();
   }
 
   @override
@@ -84,7 +64,8 @@ class _OtpScreenState extends State<OtpScreen> {
                   ],
                 ),
                 const SizedBox(height: 40),
-                Container(
+                SizedBox(
+                  width: 270,
                   child: Pinput(
                     length: 5,
                     onChanged: (value) {
@@ -99,9 +80,6 @@ class _OtpScreenState extends State<OtpScreen> {
                           });
                         }
                       }
-                      _secondsRemaining > 0
-                          ? Text('reequest new otp in $_timer')
-                          : SizedBox();
                     },
                     onCompleted: (value) {},
                     onSubmitted: (value) {},
@@ -126,6 +104,11 @@ class _OtpScreenState extends State<OtpScreen> {
                           setState(() {
                             isClick = true;
                           });
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (ctx) => PasswordScreen(),
+                            ),
+                          );
                         },
                         style: ElevatedButton.styleFrom(
                           fixedSize: const Size(307, 45),
@@ -134,10 +117,11 @@ class _OtpScreenState extends State<OtpScreen> {
                         child: Text(
                           'Continue',
                           style: GoogleFonts.inter(
-                              textStyle: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w500,
-                          )),
+                            textStyle: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
                         ),
                       )
                     : ElevatedButton(
@@ -163,8 +147,41 @@ class _OtpScreenState extends State<OtpScreen> {
                       ),
                 isClick == true
                     ? Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          // Text('00:$start'),
+                          Countdown(
+                            controller: _controller,
+                            seconds: 10,
+                            build: (_, double time) => Text(
+                              time.toString(),
+                              style: GoogleFonts.poppins(
+                                textStyle: const TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                            interval: const Duration(seconds: 1),
+                            onFinished: counterStop()
+                          ),
+                          const SizedBox(width: 5),
+                          Text(
+                            'seconds',
+                            style: GoogleFonts.poppins(
+                              textStyle: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 5),
+                          Text(
+                            'Left',
+                            style: GoogleFonts.poppins(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
                         ],
                       )
                     : Row(
@@ -203,5 +220,12 @@ class _OtpScreenState extends State<OtpScreen> {
         ),
       ),
     );
+  }
+
+  counterStop() {
+    print("hi");
+    isClick == false;
+    print(isClick);
+    setState(() {});
   }
 }

@@ -47,6 +47,10 @@ class _LanguageDetectorState extends State<LanguageDetector> {
               TextFormField(
                 controller: _control,
                 decoration: InputDecoration(
+                  focusedBorder: const OutlineInputBorder(
+                      borderSide: BorderSide(
+                    color: Color(0xFFDE3535),
+                  )),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(5),
                   ),
@@ -97,7 +101,7 @@ class _LanguageDetectorState extends State<LanguageDetector> {
                                           Text(
                                             'Langauge ID',
                                             style: GoogleFonts.inter(
-                                              textStyle: TextStyle(
+                                              textStyle: const TextStyle(
                                                 fontSize: 13,
                                                 fontWeight: FontWeight.w400,
                                               ),
@@ -107,7 +111,7 @@ class _LanguageDetectorState extends State<LanguageDetector> {
                                           Text(
                                             '${list[index].result}',
                                             style: GoogleFonts.inter(
-                                              textStyle: TextStyle(
+                                              textStyle: const TextStyle(
                                                 fontSize: 13,
                                                 fontWeight: FontWeight.w600,
                                               ),
@@ -124,7 +128,7 @@ class _LanguageDetectorState extends State<LanguageDetector> {
                                           Text(
                                             'Confidence',
                                             style: GoogleFonts.inter(
-                                              textStyle: TextStyle(
+                                              textStyle: const TextStyle(
                                                 fontSize: 13,
                                                 fontWeight: FontWeight.w400,
                                               ),
@@ -134,7 +138,7 @@ class _LanguageDetectorState extends State<LanguageDetector> {
                                           Text(
                                             '${list[index].result1}',
                                             style: GoogleFonts.inter(
-                                              textStyle: TextStyle(
+                                              textStyle: const TextStyle(
                                                 fontSize: 13,
                                                 fontWeight: FontWeight.w600,
                                                 color: Colors.red,

@@ -154,23 +154,27 @@ class ImageLabellingScreenState extends State<ImageLabellingScreen> {
                         ],
                       ),
                 const SizedBox(height: 10),
-              
-                Column(
-                  children: [
-                    Container(
-                      decoration: const BoxDecoration(
-                        color: Color(0x0CDE3535),
-                      ),
-                      child: ListView.builder(
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount: list.length,
-                          shrinkWrap: true,
-                          itemBuilder: (context, index) {
-                            return LabelDisplay(
-                                label: list[index], isSelect: true);
-                          }),
-                    )
-                  ],
+
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 15),
+                  child: Column(
+                    children: [
+                      Container(
+                        height: 418,
+                        decoration: const BoxDecoration(
+                          color: Color(0x0CDE3535),
+                        ),
+                        child: ListView.builder(
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: list.length,
+                            shrinkWrap: true,
+                            itemBuilder: (context, index) {
+                              return LabelDisplay(
+                                  label: list[index], isSelect: true);
+                            }),
+                      )
+                    ],
+                  ),
                 )
                 //  : const SizedBox(),
               ],

@@ -94,7 +94,7 @@ class _LanguageTranslationScreenState extends State<LanguageTranslationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-       backgroundColor: Colors.white,
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text(
           'Language Translation',
@@ -119,6 +119,10 @@ class _LanguageTranslationScreenState extends State<LanguageTranslationScreen> {
               TextFormField(
                 controller: _control,
                 decoration: InputDecoration(
+                  focusedBorder: const OutlineInputBorder(
+                      borderSide: BorderSide(
+                    color: Color(0xFFDE3535),
+                  )),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(5),
                   ),
@@ -153,16 +157,14 @@ class _LanguageTranslationScreenState extends State<LanguageTranslationScreen> {
                 }).toList(),
               ),
               const SizedBox(height: 20),
-             
-                   Button(
-                      onButtonTap: () async {
-                        texttranslate(_control.text, dropdownValue);
-                      },
-                      text: 'Language Translation',
-                      isPress: isPressed1,
-                        isIcon: false,
-                    ),
-               
+              Button(
+                onButtonTap: () async {
+                  texttranslate(_control.text, dropdownValue);
+                },
+                text: 'Language Translation',
+                isPress: isPressed1,
+                isIcon: false,
+              ),
               const SizedBox(height: 25),
               const SizedBox(width: 20),
               isResult == true

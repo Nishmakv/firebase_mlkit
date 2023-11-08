@@ -33,7 +33,7 @@ class ObjectDisplay extends StatelessWidget {
                   Text(
                     'Category ',
                     style: GoogleFonts.inter(
-                      textStyle: TextStyle(
+                      textStyle: const TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w400,
                       ),
@@ -43,7 +43,7 @@ class ObjectDisplay extends StatelessWidget {
                   Text(
                     label,
                     style: GoogleFonts.inter(
-                      textStyle: TextStyle(
+                      textStyle: const TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w600,
                       ),
@@ -60,17 +60,17 @@ class ObjectDisplay extends StatelessWidget {
                   Text(
                     'Accuracy Level',
                     style: GoogleFonts.inter(
-                      textStyle: TextStyle(
+                      textStyle: const TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w400,
                       ),
                     ),
                   ),
-                  SizedBox(width: 38),
+                  const SizedBox(width: 38),
                   Text(
                     accuracy.toStringAsFixed(2),
                     style: GoogleFonts.inter(
-                      textStyle: TextStyle(
+                      textStyle: const TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w600,
                         color: Colors.red,

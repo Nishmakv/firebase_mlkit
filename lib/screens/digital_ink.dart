@@ -33,7 +33,7 @@ class _SignatureCanvasState extends State<SignatureCanvas> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-       backgroundColor: Colors.white,
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text(
           'Digital Ink Recognition',
@@ -86,7 +86,9 @@ class _SignatureCanvasState extends State<SignatureCanvas> {
                 width: 330,
                 height: 300,
                 decoration: BoxDecoration(
-                  border: Border.all(color: Colors.blue),
+                  border: Border.all(
+                    color: const Color(0xFFDE3535),
+                  ),
                 ),
                 child: CustomPaint(
                   //widget used to give colour to the drawing.

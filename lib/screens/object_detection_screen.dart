@@ -160,20 +160,23 @@ class ObjectDetectionScreenState extends State<ObjectDetectionScreen> {
                         ],
                       ),
                 const SizedBox(height: 20),
-                Column(
-                  children: [
-                    ListView.builder(
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: list.length,
-                      shrinkWrap: true,
-                      itemBuilder: (context, index) {
-                        return ObjectDisplay(
-                            label: list[index].category,
-                            isSelect: true,
-                            accuracy: list[index].confidence);
-                      },
-                    ),
-                  ],
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 15),
+                  child: Column(
+                    children: [
+                      ListView.builder(
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: list.length,
+                        shrinkWrap: true,
+                        itemBuilder: (context, index) {
+                          return ObjectDisplay(
+                              label: list[index].category,
+                              isSelect: true,
+                              accuracy: list[index].confidence);
+                        },
+                      ),
+                    ],
+                  ),
                 )
               ],
             ),
