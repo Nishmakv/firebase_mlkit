@@ -8,7 +8,7 @@ if (localPropertiesFile.exists()) {
 
 def flutterRoot = localProperties.getProperty('flutter.sdk')
 if (flutterRoot == null) {
-    throw new GradleException("Flutter SDK not found. Define location with flutter.sdk in the local.properties file.")
+    throw GradleException("Flutter SDK not found. Define location with flutter.sdk in the local.properties file.")
 }
 
 def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
@@ -85,6 +85,7 @@ dependencies {
     implementation("com.google.firebase:firebase-inappmessaging-display:20.1.0  ")
     implementation("com.google.firebase:firebase-analytics-ktx")
     implementation 'com.google.mlkit:digital-ink-recognition:18.1.0'
+    implementation 'com.google.firebase:firebase-messaging:20.2.4'
    
    
  

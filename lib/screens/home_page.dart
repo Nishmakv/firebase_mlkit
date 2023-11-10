@@ -1,5 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_project/main.dart';
 import 'package:firebase_project/screens/login_screen.dart';
+import 'package:firebase_project/screens/register_screen.dart';
 import 'package:firebase_project/widgets/grid.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -14,8 +17,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  
-
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -159,17 +160,50 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                 ),
                               ),
-                              content: Builder(builder: (context) {
-                                // var height = MediaQuery.of(context).size.height;
-                                var height = 50;
-
-                                // var width = MediaQuery.of(context).size.width;
-                                var width = 500;
-                                return SizedBox(
-                                  height: height - 10,
-                                  width: width - 50,
-                                );
-                              }),
+                              content: Row(
+                                children: [
+                                  GestureDetector(
+                                    onTap: () {
+                                      FirebaseAuth.instance
+                                          .signOut()
+                                          .then((value) {
+                                        print('signed out');  
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (ctx) => LoginScreen(),
+                                          ),
+                                        );
+                                      });
+                                      signOut(context);
+                                    },
+                                    child: Container(
+                                      width: 100,
+                                      height: 50,
+                                      color: Colors.blue,
+                                      child: const Center(
+                                          child: Text(
+                                        'Yes,logout',
+                                        style: TextStyle(color: Colors.white),
+                                      )),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 10),
+                                  Container(
+                                    width: 100,
+                                    height: 50,
+                                    color: Colors.grey,
+                                    child: const Center(
+                                      child: Text(
+                                        'Cancel',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
                             ),
                           );
                         },
@@ -250,12 +284,6 @@ class _HomePageState extends State<HomePage> {
                   const Expanded(
                     child: GridScreen(),
                   ),
-                  IconButton(
-                    onPressed: () {
-                      signOut(context);
-                    },
-                    icon: Icon(Icons.exit_to_app),
-                  ),
                   Text(
                     'Copyright @interns2023 all rights reserved',
                     style: GoogleFonts.inter(
@@ -280,16 +308,15 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-
   void signOut(BuildContext ctx) async {
     final sharedPrefs = await SharedPreferences.getInstance();
     sharedPrefs.setBool("isLogin", false);
 
-    // await sharedPrefs.clear();
+    await sharedPrefs.clear();
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (ctx) => LoginScreen(),
+        builder: (ctx) => RegisterScreen(),
       ),
     );
   }

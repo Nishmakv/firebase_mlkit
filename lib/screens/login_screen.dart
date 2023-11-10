@@ -1,4 +1,4 @@
-import 'package:firebase_project/main.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_project/screens/home_page.dart';
 import 'package:firebase_project/screens/login_card.dart';
 import 'package:firebase_project/screens/register_screen.dart';
@@ -20,11 +20,12 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController passwordController = TextEditingController();
   bool isLogin = false;
   late SharedPreferences sharedPrefs;
-@override
+  @override
   void initState() {
     checkUserLoggedIn();
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,6 +51,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   controller: emailController,
                   label: 'Email Address',
                   hint: 'Enter email address',
+                  validatorvar: false,
                 ),
                 LoginCard(
                   controller: passwordController,
@@ -58,11 +60,27 @@ class _LoginScreenState extends State<LoginScreen> {
                   obscureText: true,
                   forgotPassword: true,
                   password: true,
+                  validatorvar: true,
                 ),
                 const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () async {
-                    checkLogin(context);
+                    FirebaseAuth.instance
+                        .signInWithEmailAndPassword(
+                            email: emailController.text,
+                            password: passwordController.text)
+                        .then((value) {
+                      checkLogin();
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (ctx) => HomePage(),
+                        ),
+                      );
+                    }).onError((error, stackTrace) {
+                      print('error ${error.toString()}');
+                    });
+                    // checkLogin(context);
                   },
                   style: ElevatedButton.styleFrom(
                     fixedSize: const Size(720, 50),
@@ -124,27 +142,11 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  void checkLogin(BuildContext ctx) async {
-    final _email = emailController.text;
-    final _password = passwordController.text;
-    if (_email == _password) {
-      
-      final sharedPrefs = await SharedPreferences.getInstance();
-      await sharedPrefs.setBool("isLogin", true);
-     
-      print('email and password match');
-
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (ctx) => HomePage(),
-        ),
-      );
-    } else {
-      print('emal and password doesnot match');
-    }
+  void checkLogin() async {
+    final sharedPrefs = await SharedPreferences.getInstance();
+    await sharedPrefs.setBool("isLogin", true);
   }
-  
+
   void checkUserLoggedIn() async {
     final sharedPrefs = await SharedPreferences.getInstance();
 

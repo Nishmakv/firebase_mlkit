@@ -116,34 +116,7 @@ class PasswordScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              // Row(
-              //   mainAxisAlignment: MainAxisAlignment.center,
-              //   children: [
-              //     Text(
-              //       'Back to',
-              //       style: GoogleFonts.poppins(
-              //         textStyle: const TextStyle(
-              //           fontWeight: FontWeight.w500,
-              //           fontSize: 14,
-              //           color: Color(0xFF1B1B1F),
-              //         ),
-              //       ),
-              //     ),
-              //     TextButton(
-              //       onPressed: () {},
-              //       child: Text(
-              //         'Login',
-              //         style: GoogleFonts.poppins(
-              //           textStyle: const TextStyle(
-              //             fontSize: 14,
-              //             color: Color(0xFF0073E6),
-              //             fontWeight: FontWeight.w500,
-              //           ),
-              //         ),
-              //       ),
-              //     ),
-              //   ],
-              // )
+             
             ],
           ),
         ),

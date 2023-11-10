@@ -1,5 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
+// import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_project/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 const SAVE_KEY_NAME='UserLoggedIn';
@@ -9,7 +9,7 @@ void main() async {
 
   await Firebase.initializeApp();
 
-  final fcmToken = await FirebaseMessaging.instance.getToken();
+  // final fcmToken = await FirebaseMessaging.instance.getToken();
 
   runApp(const MyApp());
 }
